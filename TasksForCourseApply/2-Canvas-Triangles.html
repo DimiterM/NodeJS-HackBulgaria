@@ -1,0 +1,93 @@
+<html>
+<head>
+</head>
+<body>
+
+
+<button onclick="clear_canvas()">Clear Canvas</button>
+<input id="color" type="color" name="favcolor" value="#0000ff" onchange="set_color()">
+<canvas id="myCanvas" width="800" height="600" style="border:1px solid #000000;"></canvas>
+
+</body>
+
+<script type="text/javascript">
+var canvas = document.getElementById("myCanvas");
+var color = document.getElementById("color").value;
+
+
+function set_color() {
+	color = document.getElementById("color").value;
+}
+
+
+function clear_canvas() {
+	canvas.width = canvas.width;
+}
+
+
+function invert_color(color) {
+    color = color.substring(1);
+    color = parseInt(color, 16);
+    color = 0xFFFFFF ^ color;
+    color = color.toString(16);
+    color = ("000000" + color).slice(-6);
+    color = "#" + color;
+    return color;
+}
+
+
+function area_triangle(points) {
+	return Math.abs(0.5 * (
+			points[0][0] * (points[1][1] - points[2][1]) + 
+			points[1][0] * (points[2][1] - points[0][1]) + 
+			points[2][0] * (points[0][1] - points[1][1])
+		)
+	);
+}
+
+
+function draw_triangle(points, color) {
+	var context = canvas.getContext('2d');
+	context.strokeStyle = color;
+	context.fillStyle = color;
+
+	context.beginPath();
+	context.moveTo(points[0][0], points[0][1]);
+	context.lineTo(points[1][0], points[1][1]);
+	context.lineTo(points[2][0], points[2][1]);
+	context.lineTo(points[0][0], points[0][1]);
+	context.closePath()
+
+	context.fill();
+	context.stroke();
+
+	// bonus: print area
+	var opposite_color = invert_color(color);
+	context.fillStyle = opposite_color;
+	var centroidX = (points[0][0] + points[1][0] + points[2][0]) / 3;
+	var centroidY = (points[0][1] + points[1][1] + points[2][1]) / 3;
+	context.fillText(area_triangle(points), centroidX, centroidY);
+}
+</script>
+
+<script type="text/javascript">
+var points = [];
+
+
+function get_click_on_canvas(event) {
+	var x = event.pageX - this.offsetLeft + this.scrollLeft;
+	var y = event.pageY - this.offsetTop + this.scrollTop;
+
+	points.push([x, y]);
+
+	if(points.length == 3) {
+		draw_triangle(points, color);
+		points = [];
+	}
+}
+
+
+canvas.addEventListener("click", get_click_on_canvas, false);
+</script>
+
+</html>
