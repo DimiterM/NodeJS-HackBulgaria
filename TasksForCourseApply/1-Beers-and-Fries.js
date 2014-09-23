@@ -5,7 +5,7 @@ function beerAndFries(items) {
 	}).map(function(i) {
 		return i.score;
 	}).sort(function(i, j) {
-		return i < j;
+		return i - j;
 	});
 
 	var fries = items.filter(function(i) {
@@ -13,7 +13,7 @@ function beerAndFries(items) {
 	}).map(function(i) {
 		return i.score;
 	}).sort(function(i, j) {
-		return i < j;
+		return i - j;
 	});
 
 	var result = 0;
